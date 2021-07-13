@@ -1,0 +1,190 @@
+---
+- hosts: localhost
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"
+  become_method: sudo
+  tasks:
+  - name: Remove Docker from machine
+    apt:
+      pkg:
+      - docker
+      - docker-engine
+      - docker.io
+      - conatinerd
+      - runc
+      state: absent
+
+  - name: Install Docker Dependencies
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - apt-transport-https
+        - ca-certificates
+        - curl
+        - gnupg
+        - lsb-release
+
+  - name: Add Docker Keys
+    become: yes
+    become_user: root
+    ansible.builtin.apt_key:
+      url: https://download.docker.com/linux/ubuntu/gpg
+      state: present
+
+
+  - name: Add Docker Repository
+    become: yes
+    become_user: root
+    apt_repository:
+      repo: deb https://download.docker.com/linux/ubuntu bionic stable
+      state: present
+
+  - name: Intall docker and update
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - docker-ce
+        - docker-ce-cli
+        - containerd.io
+
+  - name: Ensure group "docker" exists with correct gid
+    become: yes
+    become_user: root
+    ansible.builtin.group:
+      name: docker
+      state: present
+
+  - name: Add the user to docker group
+    become: yes
+    become_user: root
+    ansible.builtin.user:
+      name: "{{ lookup('env', 'USER') }}"
+      group: docker
+    
+  - name: Download docker compose
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      dest: /usr/local/bin/docker-compose
+      mode: '0755'
+
+  - name: Add Prituln Repository
+    shell: |
+      sudo tee /etc/apt/sources.list.d/pritunl.list << EOF
+      deb https://repo.pritunl.com/stable/apt focal main
+      EOF
+
+  - name: Add a Pritul apt key from a keyserver
+    become: yes
+    become_user: root
+    ansible.builtin.apt_key:
+      keyserver: keyserver.ubuntu.com:80
+      id: 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+
+  - name: Intall Pritul and update
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      name: pritunl-client-electron
+
+  - name: Install Circle Ci Validator
+    become: yes
+    become_user: root
+    community.general.snap:
+      name:
+        - docker
+        - circleci
+
+  - name: Connect circleci and docker
+    become: yes
+    become_user: root
+    command: snap connect circleci:docker docker
+
+  - name: install ZSH
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - zsh
+    
+  - name: Download ZSH
+    ignore_errors: yes
+    shell: |
+      curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+
+  - name: change bash to zsh
+    become: yes
+    become_user: root
+    shell: |
+      chsh -s /bin/zsh
+
+  - name: Download and Install nvm 
+    shell: |
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh | bash
+
+  - name: Install Java
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - default-jdk
+
+
+  - name: Download .NetCore
+    become: yes
+    become_user: root
+    get_url:
+      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      dest: ./
+      mode: '0755'
+
+  - name: instal .NetCore
+    become: yes
+    become_user: root
+    shell: |
+      dpkg -i packages-microsoft-prod.deb
+
+
+  - name: Install dotnet dependencies and Framework
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - apt-transport-https
+        - dotnet-sdk-5.0
+
+  - name: Install pyenv dependencies
+    become: yes
+    become_user: root
+    apt:
+      update_cache: yes
+      pkg:
+        - build-essential
+
+  - name: Install pyenv
+    become: yes
+    become_user: root
+    ignore_errors: yes
+    shell: |
+      curl https://pyenv.run | bash
+
+  - name: write .zsh with nvm config
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm'  >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+
+  - name: write .zsh with pyenv
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
+      echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
