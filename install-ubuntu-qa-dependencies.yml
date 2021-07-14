@@ -135,8 +135,6 @@
         - default-jdk
 
   - name: Download .NetCore
-    become: yes
-    become_user: root
     get_url:
       url: https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
       dest: ./
@@ -185,3 +183,39 @@
       echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
       echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
       echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+  - name: Install install VSCode
+    become: yes
+    become_user: root
+    community.general.snap:
+      classic: yes
+      name:
+        - code
+
+  - name: Install Git
+    become: yes
+    become_ueser: root
+    apt:
+      update_cache: yes
+      pgk:
+        - git-all
+
+  - name: Download Keybase
+    get_url:
+      url: https://prerelease.keybase.io/keybase_amd64.deb
+      dest: ./
+      mode: '0755'
+
+  - name: Instal Keybase
+    become: yes
+    become_user: root
+    shell: |
+      dpkg -i keybase_amd64.deb
+
+  - name: Install install Slack
+    become: yes
+    become_user: root
+    community.general.snap:
+      classic: yes
+      name:
+        - slack

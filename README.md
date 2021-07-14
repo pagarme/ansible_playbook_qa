@@ -15,7 +15,10 @@ this will install ansible in ubuntu distro
 and use the next command
 
 ```
-ansible-playbook install-linux-ubuntu.yml --ask-become-pass
+ansible-playbook install-ubuntu-qa-dependencies.yml --ask-become-pass
 ```
 
 e digite sua senha de `sudo`
+
+### Aplicações instaladas.
+
