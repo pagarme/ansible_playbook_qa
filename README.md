@@ -22,3 +22,16 @@ e digite sua senha de `sudo`
 
 ### Aplicações instaladas.
 
+- 
+- docker
+- Docker-compose
+- Prituln
+- circleci(validade)
+- zsh
+- node(nvm)
+- Java
+- .dotnet
+- pyenv
+- VSCode
+- Keybase
+- Slack

@@ -219,3 +219,20 @@
       classic: yes
       name:
         - slack
+
+  - name: Download GoLang
+    get_url:
+      url: https://dl.google.com/go/go1.16.6.linux-amd64.tar.gz
+      dest: ./
+      mode: '0755'
+  
+  - name: Instal GoLang
+    shell: |
+      rm -rf /usr/local/go && tar -C /usr/local -xzf go1.16.6.linux-amd64.tar.gz
+
+  - name: write .zsh with Golang Variables
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export GOPATH=$HOME' >> ~/.zshrc
+      echo 'export GOROOT=/usr/local/go'  >> ~/.zshrc
+      echo 'export PATH=$PATH:$GOROOT/bin' >> ~/.zshrc
