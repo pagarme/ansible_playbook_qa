@@ -33,7 +33,6 @@
       url: https://download.docker.com/linux/ubuntu/gpg
       state: present
 
-
   - name: Add Docker Repository
     become: yes
     become_user: root
@@ -69,7 +68,7 @@
     get_url:
       url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
       dest: /usr/local/bin/docker-compose
-      mode: '0755'
+      mode: '0755' # 7 dono poder total, 5 grupo leem e podem executar, 5 grupo leem e podem executar
 
   - name: Add Prituln Repository
     shell: |
@@ -77,14 +76,14 @@
       deb https://repo.pritunl.com/stable/apt focal main
       EOF
 
-  - name: Add a Pritul apt key from a keyserver
+  - name: Add a Prituln apt key from a keyserver
     become: yes
     become_user: root
     ansible.builtin.apt_key:
       keyserver: keyserver.ubuntu.com:80
       id: 7568D9BB55FF9E5287D586017AE645C0CF8E292A
 
-  - name: Intall Pritul and update
+  - name: Install Prituln and update
     become: yes
     become_user: root
     apt:
@@ -135,21 +134,19 @@
       pkg:
         - default-jdk
 
-
   - name: Download .NetCore
     become: yes
     become_user: root
     get_url:
-      url: https://github.com/docker/compose/releases/download/1.29.2/docker-compose-Linux-x86_64
+      url: https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb
       dest: ./
       mode: '0755'
 
-  - name: instal .NetCore
+  - name: Instal .NetCore
     become: yes
     become_user: root
     shell: |
       dpkg -i packages-microsoft-prod.deb
-
 
   - name: Install dotnet dependencies and Framework
     become: yes
