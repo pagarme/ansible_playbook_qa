@@ -22,7 +22,7 @@ e digite sua senha de `sudo`
 
 ### Aplicações instaladas.
 
-- 
+- go
 - docker
 - Docker-compose
 - Prituln
