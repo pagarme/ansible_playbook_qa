@@ -65,7 +65,7 @@
   - name: Install Java JDK
     ignore_errors: yes
     shell: >
-      brew install --cask openjdk
+      brew install openjdk
   
   - name: Install dotNet
     ignore_errors: yes
