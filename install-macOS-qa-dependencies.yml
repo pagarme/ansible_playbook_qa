@@ -1,0 +1,73 @@
+---
+- hosts: localhost
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"
+  become_method: sudo
+  tasks:
+
+  - name: nvm
+    shell: >
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    args:
+      creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+  - name: Download Homebrew installation script
+    shell: >
+      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  
+  - name: Install pyenv
+    community.general.homebrew:
+      update_homebrew: yes
+      name: pyenv
+      state: present
+
+  - name: Prepare Install Brew Cask
+    shell: >
+      ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null ; brew install caskroom/cask/brew-cask 2> /dev/null
+  
+  - name: Install Slack
+    shell: >
+      brew install --cask keybase
+
+  - name: Install zsh
+    community.general.homebrew:
+      update_homebrew: yes
+      name: 
+        - zsh
+        - zsh-completions
+      state: present
+  
+  - name: ZSH script
+    ignore_errors: yes
+    shell: |
+      curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+  
+  - name: Install Visual Studio Code
+    shell: >
+      brew install --cask visual-studio-code
+  
+  - name: Install Golang
+    community.general.homebrew:
+      update_homebrew: yes
+      name: go@1.16
+      state: present
+
+  - name: Install Docker
+    shell: >
+      brew install --cask docker
+
+  - name: Install Golang
+    community.general.homebrew:
+      update_homebrew: yes
+      name: circleci
+      state: present
+
+  - name: Install Java JDK
+    shell: >
+      brew install --cask java
+  
+  - name: Install dotNet
+    shell: >
+      brew install --cask dotnet-sdk
+  
+  

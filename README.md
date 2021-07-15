@@ -4,6 +4,7 @@ This project will install the most dependencies you using in your QA life.
 
 only compatible with ubuntu right now
 
+## UBUNTU
 If your system are a UBUNTU only execute the command 
 
 ```
@@ -19,6 +20,24 @@ ansible-playbook install-ubuntu-qa-dependencies.yml --ask-become-pass
 ```
 
 e digite sua senha de `sudo`
+
+## MACOSx
+If your system are a MacOSX only execute the command 
+
+```
+sh ./install-ansible-macos.sh
+```
+Problaby the terminal ask for you sudo password
+this will install ansible in ubuntu distro
+
+and use the next command
+
+```
+ansible-playbook install-macOS-qa-dependencies.yml --ask-become-pass
+```
+
+e digite sua senha de `sudo`
+
 
 ### Aplicações instaladas.
 
