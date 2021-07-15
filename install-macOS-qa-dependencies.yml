@@ -56,7 +56,7 @@
     shell: >
       brew install --cask docker
 
-  - name: Install Golang
+  - name: Install CircleCI CLI
     community.general.homebrew:
       update_homebrew: yes
       name: circleci
