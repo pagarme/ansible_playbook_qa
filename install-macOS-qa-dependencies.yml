@@ -11,10 +11,6 @@
     args:
       creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
 
-  - name: Download Homebrew installation script
-    shell: >
-      /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
-  
   - name: Install pyenv
     community.general.homebrew:
       update_homebrew: yes
@@ -69,3 +65,17 @@
   - name: Install dotNet
     shell: >
       brew install --cask dotnet-sdk
+
+  - name: write .zsh with nvm config
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm'  >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+
+  - name: write .zsh with pyenv
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
+      echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
