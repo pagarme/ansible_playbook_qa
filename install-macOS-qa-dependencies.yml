@@ -69,5 +69,3 @@
   - name: Install dotNet
     shell: >
       brew install --cask dotnet-sdk
-  
-  
