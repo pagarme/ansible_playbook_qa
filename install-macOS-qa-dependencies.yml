@@ -18,10 +18,12 @@
       state: present
 
   - name: Install Slack
+    ignore_errors: yes
     shell: >
       brew install --cask slack
 
   - name: Install Keybase
+    ignore_errors: yes
     shell: >
       brew install --cask keybase
 
@@ -39,6 +41,7 @@
       curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
   
   - name: Install Visual Studio Code
+    ignore_errors: yes
     shell: >
       brew install --cask visual-studio-code
   
@@ -49,6 +52,7 @@
       state: present
 
   - name: Install Docker
+    ignore_errors: yes
     shell: >
       brew install --cask docker
 
@@ -59,10 +63,12 @@
       state: present
 
   - name: Install Java JDK
+    ignore_errors: yes
     shell: >
       brew install --cask java
   
   - name: Install dotNet
+    ignore_errors: yes
     shell: >
       brew install --cask dotnet-sdk
 
