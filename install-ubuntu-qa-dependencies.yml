@@ -128,7 +128,7 @@
       dest: ./
       mode: '0755'
 
-  - name: Instal .NetCore
+  - name: Install .NetCore
     become: yes
     become_user: root
     shell: |
@@ -172,7 +172,7 @@
       echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
       echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
 
-  - name: Install install VSCode
+  - name: Install VSCode
     become: yes
     become_user: root
     community.general.snap:
@@ -200,7 +200,7 @@
   #   shell: |
   #     dpkg -i keybase_amd64.deb
 
-  - name: Install install Slack
+  - name: Install Slack
     become: yes
     become_user: root
     community.general.snap:
