@@ -18,12 +18,19 @@
       state: present
 
   - name: Prepare Install Brew Cask
+    become: yes
+    become_user: root
     shell: >
       ruby -e "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)" < /dev/null 2> /dev/null ; brew install caskroom/cask/brew-cask 2> /dev/null
   
   - name: Install Slack
     shell: >
+      brew install --cask slack
+
+  - name: Install Keybase
+    shell: >
       brew install --cask keybase
+
 
   - name: Install zsh
     community.general.homebrew:

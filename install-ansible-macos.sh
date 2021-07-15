@@ -2,5 +2,5 @@
 export PATH="/usr/local/opt/python/libexec/bin:$PATH"
 export PATH=/usr/local/bin:/usr/local/sbin:$PATH
 brew install python
-sudo pip install ansible --quiet
+sudo -H pip3 install ansible
 ansible-galaxy collection install community.general
