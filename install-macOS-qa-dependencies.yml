@@ -1,0 +1,87 @@
+---
+- hosts: localhost
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"
+  become_method: sudo
+  tasks:
+
+  - name: nvm
+    shell: >
+      curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.38.0/install.sh | bash
+    args:
+      creates: "{{ ansible_env.HOME }}/.nvm/nvm.sh"
+
+  - name: Install pyenv
+    community.general.homebrew:
+      update_homebrew: yes
+      name: pyenv
+      state: present
+
+  - name: Install Slack
+    ignore_errors: yes
+    shell: >
+      brew install --cask slack
+
+  - name: Install Keybase
+    ignore_errors: yes
+    shell: >
+      brew install --cask keybase
+
+  - name: Install zsh
+    community.general.homebrew:
+      update_homebrew: yes
+      name: 
+        - zsh
+        - zsh-completions
+      state: present
+  
+  - name: ZSH script
+    ignore_errors: yes
+    shell: |
+      curl -L https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh | sh
+  
+  - name: Install Visual Studio Code
+    ignore_errors: yes
+    shell: >
+      brew install --cask visual-studio-code
+  
+  - name: Install Golang
+    community.general.homebrew:
+      update_homebrew: yes
+      name: go@1.16
+      state: present
+
+  - name: Install Docker
+    ignore_errors: yes
+    shell: >
+      brew install --cask docker
+
+  - name: Install CircleCI CLI
+    community.general.homebrew:
+      update_homebrew: yes
+      name: circleci
+      state: present
+
+  - name: Install Java JDK
+    ignore_errors: yes
+    shell: >
+      brew install openjdk
+  
+  - name: Install dotNet
+    ignore_errors: yes
+    shell: >
+      brew install --cask dotnet-sdk
+
+  - name: write .zsh with nvm config
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm'  >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+
+  - name: write .zsh with pyenv
+    become_user: "{{ lookup('env', 'TEST') }}"
+    shell: |
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
+      echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
