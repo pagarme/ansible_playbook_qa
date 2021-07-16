@@ -45,7 +45,7 @@ e digite sua senha de `sudo`
 - docker
 - Docker-compose
 - Prituln
-- circleci(validade)
+- circleci (validate)
 - zsh
 - node(nvm)
 - Java
