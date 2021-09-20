@@ -1,0 +1,167 @@
+---
+- hosts: localhost
+  roles:
+  - kewlfft.aur
+  become: yes
+  become_user: "{{ lookup('env', 'USER') }}"
+  become_method: sudo
+  tasks:
+  - name: Install Git and build tools
+    become: yes
+    become_user: root
+    pacman:
+      update_cache: yes
+      name:
+        - git
+        - base-devel
+        - binutils
+        - make
+        - gcc
+        - pkg-config
+        - fakeroot
+
+  - name: Install docker
+    become: yes
+    become_user: root
+    pacman:
+      update_cache: yes
+      name:
+        - docker
+        - docker-compose
+
+  - name: Ensure group "docker" exists with correct gid
+    become: yes
+    become_user: root
+    ansible.builtin.group:
+      name: docker
+      state: present
+
+  - name: Add the user to docker group
+    become: yes
+    become_user: root
+    ansible.builtin.user:
+      name: "{{ lookup('env', 'USER') }}"
+      group: docker
+
+  - name: install ZSH
+    become: yes
+    become_user: root
+    pacman:
+      update_cache: yes
+      name:
+        - zsh
+
+  - name: Download OH-MY-ZSH
+    ansible.builtin.get_url:
+      url: https://raw.github.com/robbyrussell/oh-my-zsh/master/tools/install.sh
+      dest: ./ohmyzsh_install.sh
+
+  - name: Install OH-MY-ZSH
+    ansible.builtin.shell:
+      cmd: sh ./ohmyzsh_install.sh
+
+  - name: Git clone Paru AUR
+    ansible.builtin.git:
+      repo: https://aur.archlinux.org/paru.git
+      dest: ./paru
+
+  - name: Install Paru AUR
+    shell:
+      chdir: ./paru
+      cmd: makepkg -si --noconfirm
+
+  - name: Install Java
+    become: yes
+    become_user: "{{ lookup('env', 'USER') }}"
+    aur:
+      use: paru
+      name:
+        - jdk-openjdk
+
+  - name: Install Circle Ci Validator
+    become: yes
+    become_user: "{{ lookup('env', 'USER') }}"
+    aur:
+      use: paru
+      name:
+        - circleci-cli-bin
+
+  - name: Download nvm
+    ansible.builtin.get_url:
+      url: https://raw.githubusercontent.com/nvm-sh/nvm/v0.37.2/install.sh
+      dest: ./nvm_install.sh
+
+  - name: Install nvm
+    ansible.builtin.shell:
+      cmd: bash ./nvm_install.sh
+
+  - name: Install .NetCore
+    become: yes
+    become_user: root
+    pacman:
+      name:
+        - dotnet-host
+        - dotnet-runtime
+        - dotnet-sdk
+
+  - name: Install pyenv
+    become: yes
+    become_user: root
+    pacman:
+      update_cache: yes
+      name:
+        - pyenv
+
+  - name: write .zshrc with nvm config
+    become_user: "{{ lookup('env', 'USER') }}"
+    shell: |
+      echo '# NVM CONFIG' >> ~/.zshrc
+      echo 'export NVM_DIR="$HOME/.nvm"' >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"  # This loads nvm'  >> ~/.zshrc
+      echo '[ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"  # This loads nvm bash_completion' >> ~/.zshrc
+
+  - name: write .zsh with pyenv config
+    become_user: "{{ lookup('env', 'USER') }}"
+    shell: |
+      echo '# PYENV CONFIG' >> ~/.zshrc
+      echo 'eval "$(pyenv init -)"'  >> ~/.zshrc
+      echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.zshrc
+
+  - name: Install VSCode
+    become: yes
+    become_user: root
+    pacman:
+      name:
+        - code
+
+  - name: Install Slack
+    become: yes
+    become_user: "{{ lookup('env', 'USER') }}"
+    aur:
+      use: paru
+      name:
+        - slack-desktop
+
+  - name: Add Pritunl to Pacman repository
+    become: yes
+    become_user: root
+    shell: |
+      tee -a /etc/pacman.conf << EOF
+      [pritunl]
+      Server = https://repo.pritunl.com/stable/pacman
+      EOF
+
+  - name: Add a Pritunl apt key from a keyserver
+    become: yes
+    become_user: root
+    community.general.pacman_key:
+      keyserver: keyserver.ubuntu.com
+      id: 7568D9BB55FF9E5287D586017AE645C0CF8E292A
+
+  - name: Install Pritunl
+    become: yes
+    become_user: root
+    pacman:
+      update_cache: yes
+      name:
+        - pritunl-client-electron
