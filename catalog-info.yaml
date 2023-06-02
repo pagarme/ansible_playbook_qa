@@ -4,7 +4,7 @@ kind: System
 metadata:
   name: ansible_playbook_qa
   title: ansible_playbook_qa
-  namespace: pagarme
+  namespace: to-be-defined
   description: Repositório de Ansible Playbook para QA
   annotations:
     github.com/project-slug: pagarme/ansible_playbook_qa
