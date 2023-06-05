@@ -1,0 +1,19 @@
+apiVersion: backstage.io/v1alpha1
+manifestVersion: 0.0.1
+kind: System
+metadata:
+  name: ansible_playbook_qa
+  title: ansible_playbook_qa
+  namespace: to-be-defined
+  description: Repositório de Ansible Playbook para QA
+  annotations:
+    github.com/project-slug: pagarme/ansible_playbook_qa
+    pagar.me/ci: github-actions
+    pagar.me/cd: github-actions
+    stone.co/pci: false
+    stone.co/sox: false
+    stone.co/pii: false
+spec:
+  owner: pagarme/qa-team
+  type: github
+  system: platform
